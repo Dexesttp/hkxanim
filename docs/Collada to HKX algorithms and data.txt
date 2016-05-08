@@ -1,0 +1,138 @@
+============= From Blender
+
+Each node/armature bone is actually represented by a series of animations :
+
+e.g. for the skeleton_nif node : 
+Armature_skeleton_nif_pose_matrix
+> Armature_skeleton_nif_pose_matrix-input [TIME]
+> Armature_skeleton_nif_pose_matrix-output [float4x4]
+> Armature_skeleton_nif_pose_matrix-interpolation [string] = LINEAR...
+
+===
+Time interpolation (linear)
+=> start from T = 0, or if it isn't there, the given armature position (under /library_visual_scenes/visual_scene/node[id=Armature]//node[id=<the ID you want>])
+=> The armature is given as the child matrix element, a 4x4 transform matrix
+=> There's also a generax XYZ transformation, be careful. It has a rotation, translation and stuff.
+=> There's an extra animation on the root armature it seems. See the end of the file.
+
+=> Create the linear path between each of the T0 values and the Tx value, by mapping each frame to the actual path.
+=> Convert each frame's matrix to the TRS components
+=> Store these components.
+
+=> I didn't find an end time in the file, so I guess it should be asked as an option. Otherwise, it can also be deduced from the last animated node.
+===
+Example of a matrice :
+
+1 0 0 0
+0 1 0 -1.90735e-6
+0 0 1 0
+0 0 0 1
+=> really close to "identity" I'd say (maybe the 2x10^-6 thing is the only thign that "matters" for this transform)
+=> raw transform matrix ? Like, 4d transform ? Should be 3d ?
+=> All matrices end by 0 0 0 1 => requirement for transforms
+
+=> From http://stackoverflow.com/a/10635852
+	sx 0  0  0
+S = 	0  sy 0  0
+	0  0  sz 0
+	0  0  0  1
+
+	1  0  0  0
+T = 	0  1  0  0
+	0  0  1  0
+	tx ty tz 1
+
+R = ???
+
+M = S * R * T
+
+How to retrieve S, R and T from M ?
+=> from http://math.stackexchange.com/a/1463487
+
+You'll have a matrix :
+a b c d
+e f g h
+i j k l
+0 0 0 1
+
+=> translation is <d, h, l>
+a b c 0
+e f g 0
+i j k 0
+0 0 0 1
+
+=> Scale is x = || <a, e, i> ||, y = ...
+a/sx b/sy c/sz 0
+e/sx f/sy g/sz 0
+...
+
+=> Rotation matrix to quaternion
+==> from http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/
+
+theta = sqrt(1 + M00 + m11 + m22)
+qx = (m21 - m12) / (4 * theta)
+qy = (m02 - m20) / (4 * theta)
+qz = (m10 - m01) / (4 * theta)
+
+Should be it !
+
+
+
+
+
+============= From 3DsMax
+Ok, so for each node, there seems to be a few values :
+ - TranslationX
+ - TranslationY
+ - TranslationZ
+ - RotationX
+ - RotationY
+ - RotationZ
+ - ScaleX
+ - ScaleY
+ - ScaleZ
+ 
+From rotations to quaternions :
+=> Source: wikipedia article about Quaqternions/spatial rotation
+rotation = combination of a vector u and a scalar Theta.
+Quaternion : q = e^[(theta / 2) * (Ux*i + Uy*j + Uz*k)]
+=> result = cos(Theta/2) + (Ux | Uy | Uz) * sin(Theta/2)
+
+e.g. for the skeleton_nif node :
+	node-skeleton_nif_translation.X-input [TIME]
+	node-skeleton_nif_translation.X-output [float]
+	node-skeleton_nif_translation.X-intangent [X, Y] = [float, float]
+	node-skeleton_nif_translation.X-outtangent [X, Y] = [float, float]
+	node-skeleton_nif_translation.X-interpolation [String] = LINEAR, etc... see spec 1.4 page 137
+	node-skeleton_nif_translation.Y-input
+	... 
+	node-skeleton_nif_translation.Z-input
+	... 
+	node-skeleton_nif_rotationZ.ANGLE-input
+	node-skeleton_nif_rotationZ.ANGLE-output [Angle]
+	node-skeleton_nif_rotationZ.ANGLE-intangent [X, Y] = [float, float]
+	node-skeleton_nif_rotationZ.ANGLE-outtangent [X, Y] = [float, float]
+	node-skeleton_nif_rotationZ.ANGLE-interpolation [String] 
+	node-skeleton_nif_rotationY.ANGLE-input
+	...
+	node-skeleton_nif_rotationX.ANGLE-input
+	...
+	node-skeleton_nif_scale.X-input
+	node-skeleton_nif_scale.X-output [Float]
+	...
+	node-skeleton_nif_scale.Y-input
+	...
+	node-skeleton_nif_scale.Z-input
+	...
+
+The only thing should be, as above, to interpolate the values.
+The difference is to transform rXYZ angles into a quaternion...
+
+=> from https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+note : for an euler angle (a, b, c) we will note css = cos(a) * sin(b) * sin(c)
+	ccc + sss
+Q =	scc - css
+	csc + scs
+	ccs - ssc
+
+This should be all that's needed
