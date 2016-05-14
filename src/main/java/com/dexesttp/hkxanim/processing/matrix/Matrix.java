@@ -2,6 +2,9 @@ package com.dexesttp.hkxanim.processing.matrix;
 
 import com.dexesttp.hkxanim.processing.interpolation.Interpolator;
 
+/**
+ * A Matrix as given by the Blender Collida.
+ */
 public class Matrix {
 	private double[][] values;
 
@@ -13,6 +16,13 @@ public class Matrix {
 		this.values = values.clone();
 	}
 	
+	/**
+	 * Interpolate two matrices given an interpolator.
+	 * @param interpolator the interpolator to use
+	 * @param evolution the evolution at which to interpolate
+	 * @param other the other {@link Matrix} to interpolate to.
+	 * @return the interpolated {@link Matrix}.
+	 */
 	public Matrix interpolate(Interpolator interpolator, double time, Matrix other) {
 		double res[][] = new double[4][4];
 		for(int i = 0; i < 4; i++) {
