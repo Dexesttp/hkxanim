@@ -59,15 +59,15 @@ Refer to [this useful web page](http://reddit.com/r/ooer) for how to proceed. Th
 
 ## Can I use HKXAnim as a part of my other project ?
 
-The HKXAnim codebase is licensed under the MIT license.
+The HKXAnim _codebase_ is licensed under the MIT license.
 
-However, keep in mind that the HKXAnim ecosystem (especially the files given with HKXAnim, located or hinted under the /src/main/resources/files/ folder here) are not MIT, and only provided here as references for studies. You can't modify and redistribute these files. (I know this is kind of stupid, but I feel like the downide of having these files MIT is too big).
+However, keep in mind that the HKXAnim ecosystem (especially the files given with HKXAnim, located or hinted under the `/files/` and `/src/main/resources/files/` folder here) are not MIT, and only provided here as references for studies. You can't modify and redistribute these files. (I know this is kind of stupid, but I feel like the downside of having these files MIT is too big).
 
-Therefore, the packed version of HKXAnim (the .jar file you can download under "releases"), which contains theese files, is also licensed under a custom, not GNU-compliant, license. This is to prevent any legal issues with the aforementionned files.
+Therefore, the packed version of HKXAnim (the .jar file you can download under "releases"), which contains these files, is also licensed under a custom, not GNU-compliant, license. This is to prevent any legal issues with the aforementionned files.
 
 So, **You can't include the HKXAnim `.jar` in your project directly**. You'll have to provide a link to the relevant release here.
 
-**THIS ESPECIALLY MEANS YOU CAN'T UPLOAD THE HKXAnim `.jar` TOOl TO BETHSOFT/NEXUS !** Let us do it if we want, or go here if we don't want.
+**THIS ESPECIALLY MEANS YOU CAN'T UPLOAD THE HKXAnim `.jar` TOOL TO BETHSOFT/NEXUS !** Let us do it if we want, or go here if we don't want.
 
 If you want to try to make a "GNU-compilant" version of this tool based on the source code, go ahead. But I'm really not sure this would be a good idea, so don't complain if you receive anything legal-ish after that.
 
@@ -81,7 +81,7 @@ You can import the project as a standard Maven project.
 
 ### Extra files
 
-The `/files/` folder may be incomplete or empty, however it is required for the tool to properly work.
+The `/files/` and `/src/main/resources/files` folder may be incomplete or empty, however it is required for the tool to properly work.
 
 ### Submitting a Pull Request
 
@@ -119,5 +119,5 @@ DexesTTP - Lordescobar666
 
 ## License
 
-The codebae is MIT, but the releases and extra files are custom.
+The codebase is MIT, but the releases and "extra" files are custom.
 It's a little bit complex, so see the `LICENSE` file.
