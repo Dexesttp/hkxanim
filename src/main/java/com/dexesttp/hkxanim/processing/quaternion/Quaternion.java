@@ -2,27 +2,13 @@ package com.dexesttp.hkxanim.processing.quaternion;
 
 /**
  * Rotation component made of a Theta, QX, QY and QZ value.<br />
- * I think it defines like "rotate Theta arount the axis defined by QX/QY/QZ starting at 0, 0".
+ * I think it describes something like "rotate Theta arount the axis defined by QX/QY/QZ starting at 0, 0".
  */
 public class Quaternion {
-	private double theta;
-	private double qx;
-	private double qy;
-	private double qz;
-
-	/**
-	 * Create a {@link Quaternion} from its intended values.
-	 * @param theta the Theta parameter of the {@link Quaternion}
-	 * @param qx the X parameter of the {@link Quaternion}
-	 * @param qy the Y parameter of the {@link Quaternion}
-	 * @param qz the Z parameter of the {@link Quaternion}
-	 */
-	public Quaternion(double theta, double qx, double qy, double qz) {
-		this.theta = theta;
-		this.qx = qx;
-		this.qy = qy;
-		this.qz = qz;
-	}
+	private final double theta;
+	private final double qx;
+	private final double qy;
+	private final double qz;
 	
 	/**
 	 * Create a new {@link Quaternion} from an Euler rotation.<br />
@@ -44,7 +30,7 @@ public class Quaternion {
 	 * @return the relevant {@link Quaternion}.
 	 * @see <a href="https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles">Conversion between Quaternions and Euler angles</a>
 	 */
-	public static Quaternion fromEuler(double angleX, double angleY, double angleZ) {
+	public static Quaternion fromEuler(final double angleX, final double angleY, final double angleZ) {
 		double cosA = Math.cos(angleX / 2);
 		double cosB = Math.cos(angleY / 2);
 		double cosC = Math.cos(angleZ / 2);
@@ -57,6 +43,20 @@ public class Quaternion {
 				cosA * sinB * cosC + sinA * cosB * sinC,
 				cosA * cosB * sinC - sinA * sinB * cosC
 				);
+	}
+
+	/**
+	 * Create a {@link Quaternion} from its intended values.
+	 * @param theta the Theta parameter of the {@link Quaternion}
+	 * @param qx the X parameter of the {@link Quaternion}
+	 * @param qy the Y parameter of the {@link Quaternion}
+	 * @param qz the Z parameter of the {@link Quaternion}
+	 */
+	public Quaternion(final double theta, final double qx, final double qy, final double qz) {
+		this.theta = theta;
+		this.qx = qx;
+		this.qy = qy;
+		this.qz = qz;
 	}
 
 	/**

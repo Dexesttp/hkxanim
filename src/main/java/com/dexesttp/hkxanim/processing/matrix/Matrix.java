@@ -1,6 +1,7 @@
 package com.dexesttp.hkxanim.processing.matrix;
 
 import com.dexesttp.hkxanim.processing.interpolation.Interpolator;
+import com.dexesttp.hkxanim.processing.quaternion.Quaternion;
 
 /**
  * A Matrix as given by the Blender Collida.
@@ -144,5 +145,13 @@ public class Matrix {
 		return (values[1][0] / getYScale() - 
 				values[0][1] / getXScale())
 				/ getTheta();
+	}
+	
+	/**
+	 * get the rotation Quaternion part of the transform.
+	 * @return the rotation Quaternion of this matrix
+	 */
+	public Quaternion getQuaternion() {
+		return new Quaternion(getTheta(), getQX(), getQY(), getQZ());
 	}
 }

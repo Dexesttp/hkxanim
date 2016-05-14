@@ -1,5 +1,8 @@
 package com.dexesttp.hkxanim.processing.interpolation;
 
+/**
+ * Tool to compute values between a start and end point.
+ */
 public interface Interpolator {
 
 	/**
