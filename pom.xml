@@ -5,4 +5,11 @@
   <version>0.0.1-SNAPSHOT</version>
   <name>HKXAnim</name>
   <description>Animation converter for Fallout 4</description>
+  <dependencies>
+  	<dependency>
+  		<groupId>com.google.guava</groupId>
+  		<artifactId>guava</artifactId>
+  		<version>19.0</version>
+  	</dependency>
+  </dependencies>
 </project>
