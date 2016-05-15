@@ -16,7 +16,7 @@ import com.dexesttp.hkxanim.collida.exceptions.SamplerNotFoundException;
  */
 public class CollidaChannel {
 	private static XPath xpath = XPathFactory.newInstance().newXPath();
-	public final String source;
+	private final String source;
 	private final String targetBone;
 	private final String targetTransform;
 	
@@ -32,7 +32,7 @@ public class CollidaChannel {
 	}
 
 	/**
-	 * Differences between a 3DsMax bone name (preprended with "node-" and a Blender bone name.
+	 * Differences between a 3DsMax bone name (preprended with "node-") and a Blender bone name.
 	 * @param boneString the given target bone string.
 	 * @return the actual target bone name.
 	 */

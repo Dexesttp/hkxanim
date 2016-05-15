@@ -1,25 +1,23 @@
 package com.dexesttp.hkxanim.collida.arrays;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.w3c.dom.Element;
 
-/**
- * An array of raw floats. They are handled as {@link Double}s.
- */
-public class FloatAccessibleArray implements AccessibleArray<Double> {
-	private transient List<Double> contents = new ArrayList<>();
+import com.dexesttp.hkxanim.processing.interpolable.InterpolableDouble;
+
+public class InterpolableDoubleAccessibleArray implements AccessibleArray<InterpolableDouble> {
+	private transient List<InterpolableDouble> contents = new ArrayList<>();
 
 	/**
 	 * Creates a new {@link FloatAccessibleArray}
 	 * @param floatArrayElement the {@link Element} that contains the values.
 	 */
-	public FloatAccessibleArray(final Element floatArrayElement) {
+	public InterpolableDoubleAccessibleArray(final Element floatArrayElement) {
 		String[] elementsAsStrings = floatArrayElement.getTextContent().split(" ");
 		for(String element : elementsAsStrings) {
-			contents.add(Double.parseDouble(element));
+			contents.add(new InterpolableDouble(Double.parseDouble(element)));
 		}
 	}
 
@@ -27,7 +25,7 @@ public class FloatAccessibleArray implements AccessibleArray<Double> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Double get(int index) {
+	public InterpolableDouble get(int index) {
 		return contents.get(index);
 	}
 
@@ -45,9 +43,5 @@ public class FloatAccessibleArray implements AccessibleArray<Double> {
 	@Override
 	public void display() {
 		System.out.println(contents);
-	}
-
-	public Double getMax() {
-		return Collections.max(contents);
 	}
 }

@@ -1,12 +1,18 @@
 package com.dexesttp.hkxanim.processing.matrix;
 
-import com.dexesttp.hkxanim.processing.interpolation.Interpolator;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.PrimitiveIterator.OfDouble;
+
+import com.dexesttp.hkxanim.processing.interpolable.Interpolable;
+import com.dexesttp.hkxanim.processing.interpolator.Interpolator;
 import com.dexesttp.hkxanim.processing.quaternion.Quaternion;
+import com.dexesttp.hkxanim.processing.vector.Vector3D;
 
 /**
  * A Matrix as given by the Blender Collida.
  */
-public class Matrix {
+public class Matrix implements Interpolable<Matrix> {
 	private double[][] values;
 
 	/**
@@ -18,17 +24,30 @@ public class Matrix {
 	}
 	
 	/**
+	 * Creates a new Matrix by consuming the next 16 elements of the given iterator.
+	 * @param contentsIterator the {@link OfDouble} iterator to consume from 
+	 */
+	public Matrix(Iterator<Double> contentsIterator) {
+		this.values = new double[][]{
+			{contentsIterator.next(), contentsIterator.next(), contentsIterator.next(), contentsIterator.next()},
+			{contentsIterator.next(), contentsIterator.next(), contentsIterator.next(), contentsIterator.next()},
+			{contentsIterator.next(), contentsIterator.next(), contentsIterator.next(), contentsIterator.next()},
+			{contentsIterator.next(), contentsIterator.next(), contentsIterator.next(), contentsIterator.next()},
+		};
+	}
+
+	/**
 	 * Interpolate two matrices given an interpolator.
 	 * @param interpolator the interpolator to use
 	 * @param evolution the evolution at which to interpolate
 	 * @param other the other {@link Matrix} to interpolate to.
 	 * @return the interpolated {@link Matrix}.
 	 */
-	public Matrix interpolate(Interpolator interpolator, double time, Matrix other) {
+	public Matrix interpolate(Interpolator interpolator, double evolution, Matrix other) {
 		double res[][] = new double[4][4];
 		for(int i = 0; i < 4; i++) {
 			for(int j = 0; j < 4; j++) {
-				res[i][j] = interpolator.compute(this.values[i][j], time, other.values[i][j]);
+				res[i][j] = interpolator.compute(this.values[i][j], evolution, other.values[i][j]);
 			}
 		}
 		return new Matrix(values);
@@ -70,6 +89,13 @@ public class Matrix {
 	public double getZTranslation() {
 		return values[3][2];
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Vector3D getTranslation() {
+		return new Vector3D(getXTranslation(), getYTranslation(), getZTranslation());
+	}
 
 // Scale
 	/**
@@ -104,6 +130,13 @@ public class Matrix {
 			values[2][1],
 			values[2][2]);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Vector3D getScale() {
+		return new Vector3D(getXScale(), getYScale(), getZScale());
+	}
 
 // Rotation
 	/**
@@ -132,7 +165,7 @@ public class Matrix {
 	 * @return the QY component of the Quaternion.
 	 */
 	public double getQY() {
-		return (values[0][2] / getXScale() -
+		return - (values[0][2] / getXScale() -
 				values[2][0] / getZScale())
 				/ getTheta();
 	}
@@ -148,10 +181,13 @@ public class Matrix {
 	}
 	
 	/**
-	 * get the rotation Quaternion part of the transform.
-	 * @return the rotation Quaternion of this matrix
+	 * {@inheritDoc}
 	 */
 	public Quaternion getQuaternion() {
 		return new Quaternion(getTheta(), getQX(), getQY(), getQZ());
+	}
+	
+	public String toString() {
+		return Arrays.deepToString(values);
 	}
 }

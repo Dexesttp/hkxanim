@@ -1,4 +1,4 @@
-package com.dexesttp.hkxanim.processing.interpolation;
+package com.dexesttp.hkxanim.processing.interpolator;
 
 /**
  * The most basic of interpolators

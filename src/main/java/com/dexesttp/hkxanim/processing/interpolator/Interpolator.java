@@ -1,4 +1,4 @@
-package com.dexesttp.hkxanim.processing.interpolation;
+package com.dexesttp.hkxanim.processing.interpolator;
 
 /**
  * Tool to compute values between a start and end point.

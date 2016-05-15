@@ -5,7 +5,12 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import com.dexesttp.hkxanim.collida.arrays.AccessibleArrayFactory;
+import com.dexesttp.hkxanim.collida.exceptions.UnhandledAccessibleArray;
 
 /**
  * Retrieve a Collida sampler from its Element.
@@ -21,21 +26,46 @@ import org.w3c.dom.Element;
  */
 public class CollidaSamplerFactory {
 	private static XPath xPath = XPathFactory.newInstance().newXPath();
+	private final AccessibleArrayFactory aaFactory;
+	
+	public CollidaSamplerFactory(Document document) {
+		this.aaFactory = new AccessibleArrayFactory(document);
+	}
 	
 	private String getNodeID(String property, Element root) throws XPathExpressionException {
+		String samplerID = root.getAttribute("id");
 		String extractedString = (String) xPath
-				.evaluate("//input[@semantic='" + property + "']/@source", root, XPathConstants.STRING);
+				.evaluate("//sampler[@id='" + samplerID + "']/input[@semantic='" + property + "']/@source", root, XPathConstants.STRING);
 		if(extractedString == null || extractedString.isEmpty())
 			return "";
 		return extractedString.substring(1);
 	}
 	
-	public CollidaSampler create(String type, Element element) throws XPathExpressionException {
+	public FloatCollidaSampler createFloatSampler(String type, Element element) throws XPathExpressionException, DOMException, UnhandledAccessibleArray {
 		String inputNodeName = getNodeID("INPUT", element);
 		String outputNodeName = getNodeID("OUTPUT", element);
 		String interpolationNodeName = getNodeID("INTERPOLATION", element);
 		String inTangentNodeName = getNodeID("IN_TANGENT", element);
 		String outTangentNodeName = getNodeID("OUT_TANGENT", element);
-		return new CollidaSampler(inputNodeName, outputNodeName, interpolationNodeName, inTangentNodeName, outTangentNodeName);
+		return new FloatCollidaSampler(
+			aaFactory.getTimeArrayByID(inputNodeName),
+			aaFactory.getValuesArrayByID(outputNodeName),
+			aaFactory.getInterpolationsByID(interpolationNodeName),
+			aaFactory.getTangentsByID(inTangentNodeName),
+			aaFactory.getTangentsByID(outTangentNodeName));
+	}
+	
+	public MatrixCollidaSampler createMatrixSampler(String type, Element element) throws XPathExpressionException, DOMException, UnhandledAccessibleArray {
+		String inputNodeName = getNodeID("INPUT", element);
+		String outputNodeName = getNodeID("OUTPUT", element);
+		String interpolationNodeName = getNodeID("INTERPOLATION", element);
+		String inTangentNodeName = getNodeID("IN_TANGENT", element);
+		String outTangentNodeName = getNodeID("OUT_TANGENT", element);
+		return new MatrixCollidaSampler(
+			aaFactory.getTimeArrayByID(inputNodeName),
+			aaFactory.getMatrixArrayByID(outputNodeName),
+			aaFactory.getInterpolationsByID(interpolationNodeName),
+			aaFactory.getTangentsByID(inTangentNodeName),
+			aaFactory.getTangentsByID(outTangentNodeName));
 	}
 }

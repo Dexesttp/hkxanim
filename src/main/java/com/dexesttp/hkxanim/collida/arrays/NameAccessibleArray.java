@@ -9,7 +9,7 @@ import org.w3c.dom.Element;
 /**
  * Represents an array of {@link String}, as names.
  */
-public class NameAccessibleArray implements AccessibleArray {
+public class NameAccessibleArray implements AccessibleArray<String> {
 	private transient List<String> contents = new ArrayList<>();
 	
 	/**
@@ -18,6 +18,22 @@ public class NameAccessibleArray implements AccessibleArray {
 	 */
 	public NameAccessibleArray(final Element nameArrayElement) {
 		contents.addAll(Arrays.asList(nameArrayElement.getTextContent().split(" ")));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String get(int index) {
+		return contents.get(index);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int size() {
+		return contents.size();
 	}
 
 	/**
