@@ -90,4 +90,26 @@ public class Quaternion {
 	public double getQZ() {
 		return qz;
 	}
+
+	/**
+	 * Combine two quaternions with the Hamilton product.<br />
+	 * Visualize this as :
+	 * <pre>
+	 * theta	=> theta, X, Y, Z
+	 * X	=> X, theta, Z, Y
+	 * Y	=> Y, Z, theta, X
+	 * Z	=> Z, Y, X, theta
+	 * </pre>
+	 * @see https://en.wikipedia.org/wiki/Quaternion#Hamilton_product
+	 * @param other the other quaternion to combine.
+	 * @return the result quaternion.
+	 */
+	public Quaternion combine(Quaternion other) {
+		return new Quaternion(
+				this.theta * other.theta	- this.qx * other.qx	- this.qy * other.qy	- this.qz * other.qz,
+				this.theta * other.qx		+ this.qx * other.theta	+ this.qy * other.qz	- this.qz * other.qy,
+				this.theta * other.qy		- this.qx * other.qz	+ this.qy * other.theta	- this.qz * other.qx,
+				this.theta * other.qz		+ this.qx * other.qy	- this.qy * other.qx	+ this.qz * other.theta
+				);
+	}
 }
