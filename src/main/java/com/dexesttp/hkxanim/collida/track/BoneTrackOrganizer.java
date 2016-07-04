@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.DoubleSupplier;
 import java.util.stream.DoubleStream;
 
@@ -100,5 +101,9 @@ public class BoneTrackOrganizer {
 				.limit(framesCount)
 				.iterator();
 			};
+	}
+
+	public Set<String> getBoneNames() {
+		return contents.keySet();
 	}
 }

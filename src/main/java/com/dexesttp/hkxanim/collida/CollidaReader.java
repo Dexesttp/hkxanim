@@ -21,9 +21,10 @@ import com.dexesttp.hkxanim.collida.exceptions.AnimationNotFoundException;
 import com.dexesttp.hkxanim.collida.exceptions.SamplerNotFoundException;
 import com.dexesttp.hkxanim.collida.exceptions.UnhandledAccessibleArray;
 import com.dexesttp.hkxanim.collida.track.BoneTrackOrganizer;
-import com.dexesttp.hkxanim.havok.HKXAnimationFactory;
-import com.dexesttp.hkxanim.havok.HKXSkeleton;
 import com.dexesttp.hkxanim.havok.NoSkeletonFoundException;
+import com.dexesttp.hkxanim.havok.components.HKXAnimationContainer;
+import com.dexesttp.hkxanim.havok.components.HKXAnimationFactory;
+import com.dexesttp.hkxanim.havok.components.HKXSkeleton;
 import com.dexesttp.hkxpack.data.HKXFile;
 
 public class CollidaReader {
@@ -66,7 +67,7 @@ public class CollidaReader {
 	 * @throws DOMException 
 	 * @throws NoSkeletonFoundException 
 	 */
-	public HKXFile fill(HKXSkeleton skeleton) throws SAXException, IOException, ParserConfigurationException, AnimationNotFoundException, SamplerNotFoundException, XPathExpressionException, DOMException, UnhandledAccessibleArray, NoSkeletonFoundException {
+	public HKXAnimationContainer fill(HKXSkeleton skeleton) throws SAXException, IOException, ParserConfigurationException, AnimationNotFoundException, SamplerNotFoundException, XPathExpressionException, DOMException, UnhandledAccessibleArray, NoSkeletonFoundException {
 		Document document = getDocument();
 		document.normalizeDocument();
 		Element root = getAnimationRoot(document);
@@ -83,11 +84,10 @@ public class CollidaReader {
 		boneTracks.displayInfos();
 		
 		// Fill the HKX file.
-		HKXFile animationFile = new HKXAnimationFactory(skeleton).fromTracks(boneTracks);
-		
+		HKXAnimationContainer animationContainer = new HKXAnimationFactory(skeleton).fromTracks(boneTracks);
 		// Display end message
 		System.out.println("HKX file created. Exporting...");
 		
-		return animationFile;
+		return animationContainer;
 	}
 }
