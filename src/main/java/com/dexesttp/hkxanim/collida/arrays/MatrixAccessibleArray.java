@@ -27,7 +27,7 @@ public class MatrixAccessibleArray implements AccessibleArray<Matrix> {
 				.mapToDouble(Double::parseDouble)
 				.iterator();
 		while(contentsIterator.hasNext()) {
-			contents.add(new Matrix(contentsIterator));
+			contents.add(Matrix.fromLineFirstIterator(contentsIterator));
 		}
 	}
 	

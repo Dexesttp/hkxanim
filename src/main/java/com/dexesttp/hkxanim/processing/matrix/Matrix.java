@@ -1,8 +1,6 @@
 package com.dexesttp.hkxanim.processing.matrix;
 
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.PrimitiveIterator.OfDouble;
 
 import com.dexesttp.hkxanim.processing.interpolable.Interpolable;
 import com.dexesttp.hkxanim.processing.interpolator.Interpolator;
@@ -14,26 +12,32 @@ import com.dexesttp.hkxanim.processing.vector.Vector3D;
  */
 public class Matrix implements Interpolable<Matrix> {
 	private double[][] values;
+	
+	public static Matrix fromColumnFirstIterator(Iterator<Double> contentsIterator) {
+		double[][] values = new double[][]{new double[4], new double[4], new double[4], new double[4]};
+		for(int column = 0; column < 4; column++) {
+			for(int line = 0; line < 4; line++) {
+				values[line][column] = contentsIterator.next();
+			}
+		}
+		return new Matrix(values);
+	}
 
+	public static Matrix fromLineFirstIterator(Iterator<Double> contentsIterator) {
+		double[][] values = new double[][]{new double[4], new double[4], new double[4], new double[4]};
+		for(int line = 0; line < 4; line++) {
+			for(int column = 0; column < 4; column++) {
+				values[line][column] = contentsIterator.next();
+			}
+		}
+		return new Matrix(values);
+	}
 	/**
 	 * Create a new Matrix
-	 * @param values the Matrix values, ordered by (line, column);
+	 * @param values the Matrix values, ordered as (line, column);
 	 */
 	public Matrix(double[][] values) {
 		this.values = values.clone();
-	}
-	
-	/**
-	 * Creates a new Matrix by consuming the next 16 elements of the given iterator.
-	 * @param contentsIterator the {@link OfDouble} iterator to consume from 
-	 */
-	public Matrix(Iterator<Double> contentsIterator) {
-		this.values = new double[][]{
-			{contentsIterator.next(), contentsIterator.next(), contentsIterator.next(), contentsIterator.next()},
-			{contentsIterator.next(), contentsIterator.next(), contentsIterator.next(), contentsIterator.next()},
-			{contentsIterator.next(), contentsIterator.next(), contentsIterator.next(), contentsIterator.next()},
-			{contentsIterator.next(), contentsIterator.next(), contentsIterator.next(), contentsIterator.next()},
-		};
 	}
 
 	/**
@@ -61,7 +65,7 @@ public class Matrix implements Interpolable<Matrix> {
 	 * @param z the Z coordinate of the vector.
 	 * @return the size of the <x y z> vector.
 	 */
-	private double get3DSize(final double x, final double y, final double z) {
+	private static double get3DSize(final double x, final double y, final double z) {
 		return Math.sqrt(x * x + y * y + z * z);
 	}
 
@@ -71,7 +75,7 @@ public class Matrix implements Interpolable<Matrix> {
 	 * @return the X translation component of this matrix.
 	 */
 	public double getXTranslation() {
-		return values[3][0];
+		return values[0][3];
 	}
 
 	/**
@@ -79,7 +83,7 @@ public class Matrix implements Interpolable<Matrix> {
 	 * @return the Y translation component of this matrix.
 	 */
 	public double getYTranslation() {
-		return values[3][1];
+		return values[1][3];
 	}
 
 	/**
@@ -87,7 +91,7 @@ public class Matrix implements Interpolable<Matrix> {
 	 * @return the Z translation component of this matrix.
 	 */
 	public double getZTranslation() {
-		return values[3][2];
+		return values[2][3];
 	}
 	
 	/**
@@ -103,10 +107,7 @@ public class Matrix implements Interpolable<Matrix> {
 	 * @return the X scale of this matrix.
 	 */
 	public double getXScale() {
-		return get3DSize(
-			values[0][0],
-			values[0][1],
-			values[0][2]);
+		return get3DSize(values[0][0], values[1][0], values[2][0]);
 	}
 
 	/**
@@ -114,10 +115,7 @@ public class Matrix implements Interpolable<Matrix> {
 	 * @return the Y scale of this matrix.
 	 */
 	public double getYScale() {
-		return get3DSize(
-			values[1][0],
-			values[1][1],
-			values[1][2]);
+		return get3DSize(values[0][1], values[1][1], values[2][1]);
 	}
 
 	/**
@@ -125,10 +123,7 @@ public class Matrix implements Interpolable<Matrix> {
 	 * @return the Z scale of this matrix.
 	 */
 	public double getZScale() {
-		return get3DSize(
-			values[2][0],
-			values[2][1],
-			values[2][2]);
+		return get3DSize(values[0][2], values[1][2], values[2][2]);
 	}
 	
 	/**
@@ -155,8 +150,8 @@ public class Matrix implements Interpolable<Matrix> {
 	 * @return the QX component of the Quaternion.
 	 */
 	public double getQX() {
-		return (values[2][1] / getZScale() - 
-				values[1][2] / getYScale())
+		return (values[1][2] / getZScale() - 
+				values[2][1] / getYScale())
 				/ getTheta();
 	}
 
@@ -165,8 +160,8 @@ public class Matrix implements Interpolable<Matrix> {
 	 * @return the QY component of the Quaternion.
 	 */
 	public double getQY() {
-		return - (values[0][2] / getXScale() -
-				values[2][0] / getZScale())
+		return - (values[2][0] / getXScale() -
+				values[0][2] / getZScale())
 				/ getTheta();
 	}
 
@@ -175,8 +170,8 @@ public class Matrix implements Interpolable<Matrix> {
 	 * @return the QZ component of the Quaternion.
 	 */
 	public double getQZ() {
-		return (values[1][0] / getYScale() - 
-				values[0][1] / getXScale())
+		return (values[0][1] / getYScale() - 
+				values[1][0] / getXScale())
 				/ getTheta();
 	}
 	
@@ -185,9 +180,5 @@ public class Matrix implements Interpolable<Matrix> {
 	 */
 	public Quaternion getQuaternion() {
 		return new Quaternion(getTheta(), getQX(), getQY(), getQZ());
-	}
-	
-	public String toString() {
-		return Arrays.deepToString(values);
 	}
 }

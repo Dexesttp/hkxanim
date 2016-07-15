@@ -24,15 +24,11 @@ public class HKXAnimationUtilities {
 	public void fillAnimationNode(HKXObject node, HKXAnimationContainer container) throws ClassFileReadException {
 		// Define the length of the animation
 		double totalTime = container.getTotalTime();
-		System.out.println("Time : " + totalTime);
-
 		HKXMember duration = node.getMembersList().get(2);
 		((HKXDirectMember<Double>) duration).set(totalTime);
 		
 		// Define the number of bone tracks to use
 		int bonesLength = container.getBones().size();
-		System.out.println("Bones : " + bonesLength);
-		
 		HKXMember numberOfTransformTracks = node.getMembersList().get(3);
 		((HKXDirectMember<Integer>) numberOfTransformTracks).set(bonesLength);
 		

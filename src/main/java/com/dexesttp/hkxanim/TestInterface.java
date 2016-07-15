@@ -27,15 +27,19 @@ import com.dexesttp.hkxpack.tagreader.TagXMLReader;
 import com.dexesttp.hkxpack.tagreader.exceptions.InvalidTagXMLException;
 
 public class TestInterface {
-	@SuppressWarnings("unused")
+	protected static String blenderFileStart = "D:\\SANDBOX\\FO4\\animStudy\\FO4Animation-Blender.dae";
+	protected static String blenderFileNew = "D:\\SANDBOX\\FO4\\animStudy\\TestAnimation01.dae";
+	protected static String blenderFileLeito = "D:\\SANDBOX\\FO4\\animStudy\\animation_v01_01.dae";
+	protected static String maxFile = "D:\\SANDBOX\\FO4\\animStudy\\FO4Animation-3dsmax.DAE";
+	
 	public static void main(final String... args) {
-		// Tested Collida files
-		File blenderFileStart = new File("D:\\SANDBOX\\FO4\\animStudy\\FO4Animation-Blender.dae");
-		File blenderFileNew = new File("D:\\SANDBOX\\FO4\\animStudy\\TestAnimation01.dae");
-		File blenderFileLeito = new File("D:\\SANDBOX\\FO4\\animStudy\\animation_v01_01.dae");
-		File maxFile = new File("D:\\SANDBOX\\FO4\\animStudy\\FO4Animation-3dsmax.DAE");
-
+		String fileName = blenderFileLeito;
+		if(args.length > 1) {
+			fileName = args[0];
+		}
+		
 		// Necessary files
+		File inputFile = new File(fileName);
 		File outputFile = new File("test.hkx");
 		
 		try {
@@ -44,7 +48,7 @@ public class TestInterface {
 			HKXDescriptorFactory descriptorFactory = new HKXDescriptorFactory(enumResolver);
 			
 			// Collida reader
-			CollidaReader collidaReader = new CollidaReader(blenderFileLeito);
+			CollidaReader collidaReader = new CollidaReader(inputFile);
 			// Create animation from Collida file + skeleton
 			HKXAnimationContainer animationContainer = collidaReader.fill();
 			
