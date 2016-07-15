@@ -46,7 +46,6 @@ public class HKXAnimationUtilities {
 	}
 
 	private void fillAnnotationTracks(HKXArrayMember annotationTracks, HKXAnimationContainer container) throws ClassFileReadException {
-		System.out.println("== Annotation tracks ==");
 		HKXDescriptor annotationTrackDescriptor = factory.get("hkaAnnotationTrack");
 		for(String boneName : container.getBones()) {
 			HKXObject annotationTrack = new HKXObject("", annotationTrackDescriptor);

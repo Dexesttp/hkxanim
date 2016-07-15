@@ -5,7 +5,10 @@ import com.dexesttp.hkxanim.havok.utilities.HKXAnimationUtilities;
 import com.dexesttp.hkxanim.havok.utilities.HKXSkeletonUtilities;
 import com.dexesttp.hkxpack.data.HKXFile;
 import com.dexesttp.hkxpack.data.HKXObject;
+import com.dexesttp.hkxpack.data.members.HKXArrayMember;
+import com.dexesttp.hkxpack.data.members.HKXDirectMember;
 import com.dexesttp.hkxpack.descriptor.HKXDescriptorFactory;
+import com.dexesttp.hkxpack.descriptor.enums.HKXType;
 import com.dexesttp.hkxpack.descriptor.exceptions.ClassFileReadException;
 
 public class HKXAnimationFileFactory {
@@ -44,6 +47,13 @@ public class HKXAnimationFileFactory {
 				.findFirst()
 				.orElseThrow(() -> new NullPointerException("The animation binding node couldn't be retrieved from the template file"));
 		
+		HKXArrayMember transformTracksToBoneIndices = (HKXArrayMember) animationBindingObject.getMembersList().get(3);
+		for(int i = 0; i < container.getBones().size(); i++) {
+			HKXDirectMember<Integer> boneIndice = new HKXDirectMember<>("", HKXType.TYPE_INT16);
+			boneIndice.set(i);
+			transformTracksToBoneIndices.add(boneIndice);
+		}
+		System.out.println("== Template filled ==");
 		
 		return template;
 	}
