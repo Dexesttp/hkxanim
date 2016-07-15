@@ -1,7 +1,10 @@
 package com.dexesttp.hkxanim.havok.file;
 
 import com.dexesttp.hkxanim.havok.components.HKXAnimationContainer;
+import com.dexesttp.hkxanim.havok.utilities.HKXAnimationUtilities;
+import com.dexesttp.hkxanim.havok.utilities.HKXSkeletonUtilities;
 import com.dexesttp.hkxpack.data.HKXFile;
+import com.dexesttp.hkxpack.data.HKXObject;
 import com.dexesttp.hkxpack.descriptor.HKXDescriptorFactory;
 import com.dexesttp.hkxpack.descriptor.exceptions.ClassFileReadException;
 
@@ -13,25 +16,35 @@ public class HKXAnimationFileFactory {
 	}
 	
 	public HKXFile createFile(HKXFile template, HKXAnimationContainer container) throws ClassFileReadException {
-		double totalTime = container.getTotalTime();
-		int framesLength = container.getFrames().size();
-		System.out.println("Time : " + totalTime);
-		System.out.println("Frames : " + framesLength);
-		// Define the skeleton bones to use
-		int bonesLength = container.getBones().size();
-		System.out.println("Bones : " + bonesLength);
 		
-		// Define the skeleton bone hierarchy
-		// HELP IM NOT GOOD WITH COMPUTERS OH GEEZ
+		// Fill the skeleton node with the skeleton pose
+		HKXObject skeletonObject = template.getContentCollection()
+				.stream()
+				.filter(obj -> obj.getDescriptor().getName().equals("hkaSkeleton"))
+				.findFirst()
+				.orElseThrow(() -> new NullPointerException("The skeleton node couldn't be retrieved from the template file"));
 		
-		// Fill the animation file with the skeleton pose
-		// HELP² HELP²
+		HKXSkeletonUtilities skeletonHelper = new HKXSkeletonUtilities(factory);
+		skeletonHelper.fillSkeletonNode(skeletonObject, container);
 		
-		// Fill the animation file with the animation data
-		// Oh. That I know.
+		// Fill the animation node with the animation data
+		HKXObject animationObject = template.getContentCollection()
+				.stream()
+				.filter(obj -> obj.getDescriptor().getName().equals("hkaInterleavedUncompressedAnimation"))
+				.findFirst()
+				.orElseThrow(() -> new NullPointerException("The animation node couldn't be retrieved from the template file"));
+
+		HKXAnimationUtilities animationHelper = new HKXAnimationUtilities(factory);
+		animationHelper.fillAnimationNode(animationObject, container);
+
+		// Fill the animation binding node with the tracks data
+		HKXObject animationBindingObject = template.getContentCollection()
+				.stream()
+				.filter(obj -> obj.getDescriptor().getName().equals("hkaAnimationBinding"))
+				.findFirst()
+				.orElseThrow(() -> new NullPointerException("The animation binding node couldn't be retrieved from the template file"));
 		
-		// Fill the other data from the animation file.
 		
-		return null;
+		return template;
 	}
 }

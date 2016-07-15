@@ -7,26 +7,21 @@ import java.io.InputStream;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPathExpressionException;
 
-import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import com.dexesttp.hkxanim.collida.CollidaReader;
 import com.dexesttp.hkxanim.collida.exceptions.AnimationNotFoundException;
 import com.dexesttp.hkxanim.collida.exceptions.SamplerNotFoundException;
+import com.dexesttp.hkxanim.collida.exceptions.SkeletonNotFoundException;
 import com.dexesttp.hkxanim.collida.exceptions.UnhandledAccessibleArray;
-import com.dexesttp.hkxanim.havok.NoSkeletonFoundException;
 import com.dexesttp.hkxanim.havok.components.HKXAnimationContainer;
-import com.dexesttp.hkxanim.havok.components.HKXSkeleton;
 import com.dexesttp.hkxanim.havok.file.HKXAnimationFileFactory;
 import com.dexesttp.hkxpack.data.HKXFile;
 import com.dexesttp.hkxpack.descriptor.HKXDescriptorFactory;
 import com.dexesttp.hkxpack.descriptor.HKXEnumResolver;
-import com.dexesttp.hkxpack.hkx.exceptions.InvalidPositionException;
 import com.dexesttp.hkxpack.hkx.exceptions.UnsupportedVersionError;
-import com.dexesttp.hkxpack.hkxreader.HKXReader;
 import com.dexesttp.hkxpack.hkxwriter.HKXWriter;
 import com.dexesttp.hkxpack.tagreader.TagXMLReader;
 import com.dexesttp.hkxpack.tagreader.exceptions.InvalidTagXMLException;
@@ -41,22 +36,17 @@ public class TestInterface {
 		File maxFile = new File("D:\\SANDBOX\\FO4\\animStudy\\FO4Animation-3dsmax.DAE");
 
 		// Necessary files
-		File skeletonFile = new File("D:\\SANDBOX\\FO4\\animStudy\\skeleton.hkx");
 		File outputFile = new File("test.hkx");
 		
 		try {
 			// skeleton file reader
 			HKXEnumResolver enumResolver = new HKXEnumResolver();
 			HKXDescriptorFactory descriptorFactory = new HKXDescriptorFactory(enumResolver);
-			HKXReader hkxReader = new HKXReader(skeletonFile, descriptorFactory, enumResolver);
-			HKXFile hkxSkeleton = hkxReader.read();
-			// Load skeleton-specific data
-			HKXSkeleton skeleton = HKXSkeleton.fromHKXFile(hkxSkeleton);
 			
 			// Collida reader
 			CollidaReader collidaReader = new CollidaReader(blenderFileLeito);
 			// Create animation from Collida file + skeleton
-			HKXAnimationContainer animationContainer = collidaReader.fill(skeleton);
+			HKXAnimationContainer animationContainer = collidaReader.fill();
 			
 			// Read animation template
 			DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
@@ -73,20 +63,18 @@ public class TestInterface {
 			// Write the animation file as HKX file.
 			HKXWriter hkxWriter = new HKXWriter(outputFile, enumResolver);
 			hkxWriter.write(animOutput);
-		} catch ( SAXException
-				| IOException
-				| ParserConfigurationException
+		} catch (IOException
 				| AnimationNotFoundException
+				| SkeletonNotFoundException
 				| SamplerNotFoundException
-				| XPathExpressionException
-				| DOMException
 				| UnhandledAccessibleArray
-				| InvalidPositionException
 				| UnsupportedVersionError
-				| NoSkeletonFoundException
 				| InvalidTagXMLException e) {
 			// Gotta catch 'em all !
 			e.printStackTrace();
+		} catch (SAXException
+				| ParserConfigurationException e) {
+			throw new RuntimeException("There was an error parsing the template output file", e);
 		}
 	}
 }
